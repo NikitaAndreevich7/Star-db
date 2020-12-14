@@ -24,11 +24,24 @@ export default class App extends Component {
 
   state = {
     swapiService: new SwapiService(),
-
+    isLoggedIn: false
   };
 
+  onLogin = () => {
+    this.setState({
+      isLoggedIn: true
+    });
+  };
 
-
+  onServiceChange = () => {
+    this.setState(({ swapiService }) => {
+      const Service = swapiService instanceof SwapiService ?
+                        DummySwapiService : SwapiService;
+      return {
+        swapiService: new Service()
+      };
+    });
+  };
 
   render() {
 
@@ -55,7 +68,20 @@ export default class App extends Component {
                          return <StarshipDetails itemId={id} />
                        }}/>
 
-               
+                <Route
+                  path="/login"
+                  render={() => (
+                    <LoginPage
+                      isLoggedIn={isLoggedIn}
+                      onLogin={this.onLogin}/>
+                  )}/>
+
+                <Route
+                  path="/secret"
+                  render={() => (
+                    <SecretPage isLoggedIn={isLoggedIn} />
+                  )}/>
+
                 <Route render={() => <h2>Page not found</h2>} />
               </Switch>
 
